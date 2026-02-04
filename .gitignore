@@ -1,0 +1,53 @@
+# Python bytecode and cache
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Packaging / build artifacts
+dist/
+build/
+*.egg-info/
+.eggs/
+*.egg
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Test & coverage outputs
+.coverage
+.coverage.*
+.pytest_cache/
+nosetests.xml
+coverage.xml
+htmlcov/
+
+# Type checking / lint caches
+.mypy_cache/
+.pytype/
+ruff_cache/
+.dmypy.json
+
+# Logs
+*.log
+logs/
+
+# Environment files
+.env
+*.env
+
+# OS / editor junk
+.DS_Store
+.idea/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Credentials (adjust patterns to your needs; keep secrets out of git)
+google_credentials.json
+service-account*.json
+*credentials*.json
+secrets*.json
+agile*.json

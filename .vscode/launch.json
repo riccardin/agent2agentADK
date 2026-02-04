@@ -1,0 +1,31 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug agent (file)",
+      "type": "python",
+      "request": "launch",
+      "python": "/Users/Rick.Magana@arctera.io/Downloads/Apps/GoogleAI/adk_multiagent_systems/.venv/bin/python",
+      "program": "${workspaceFolder}/parent_and_subagents/agent.py",
+      "cwd": "${workspaceFolder}",
+      "envFile": "${workspaceFolder}/.env",
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}"
+      },
+      "justMyCode": true
+    },
+    {
+      "name": "Debug agent (module)",
+      "type": "python",
+      "request": "launch",
+      "python": "/Users/Rick.Magana@arctera.io/Downloads/Apps/GoogleAI/adk_multiagent_systems/.venv/bin/python",
+      "module": "parent_and_subagents.agent",
+      "cwd": "${workspaceFolder}",
+      "envFile": "${workspaceFolder}/.env",
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}"
+      },
+      "justMyCode": true
+    }
+  ]
+}
