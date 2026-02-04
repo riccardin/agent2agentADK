@@ -114,3 +114,35 @@ Open the Run and Debug view, pick a configuration, and start debugging. The conf
 - Build Multi-Agent Systems with ADK (Google Codelab): https://codelabs.developers.google.com/codelabs/production-ready-ai-with-gc/3-developing-agents/build-a-multi-agent-system-with-adk#0
 
 - ADK Python SDK:  https://github.com/google/adk-python
+
+
+## Networking Behind Zscaler
+
+### Best Fix: Trust Zscaler CA in Python
+
+When running behind Zscaler (TLS inspection), Python `requests` may fail certificate verification because Zscaler re-signs TLS with your organization’s root CA, which is not in `certifi` by default. The most reliable fix is to add your Zscaler root CA to a combined trust bundle and point Python to it.
+
+1) Export the Zscaler root certificate from macOS Keychain:
+- Open `Keychain Access` → search for your org’s TLS inspection root (e.g., “Zscaler Root CA”).
+- Right-click the certificate → Export… → save as `ZscalerRootCA.cer` (e.g., to `~/Downloads/`).
+
+2) Convert to PEM if exported in DER:
+```bash
+openssl x509 -in ~/Downloads/ZscalerRootCA.cer -inform DER -out ~/Downloads/zscaler_root_ca.pem -outform PEM
+```
+
+3) Create a combined CA bundle (public CAs + Zscaler):
+- Find the `certifi` CA bundle path:
+```bash
+~/Users/UserName/Downloads/Apps/GoogleAI/~adk_multiagent_systems/.venv/bin/python -c "import certifi,sys; print(certifi.where())"
+```
+- Build a combined bundle:
+```bash
+mkdir -p ~/.certs
+```
+```bash
+cat $(~/Users/UserName/Downloads/Apps/GoogleAI/adk_multiagent_systems/.venv/bin/python -c "import certifi,sys; print(certifi.where())") ~/Downloads/zscaler_root_ca.pem > ~/.certs/combined-ca.pem
+```
+
+4) Point Python/requests to the combined bundle:
+- Add to your project `.env`:
