@@ -28,6 +28,14 @@ How this repo maps to those ideas:
 
 For background and detailed walkthroughs, see the official codelab: https://codelabs.developers.google.com/codelabs/production-ready-ai-with-gc/3-developing-agents/build-a-multi-agent-system-with-adk#0
 
+## Continued experimentation
+
+There are many ways to build on what you've learned. Here are some ideas:
+
+- Add more agents: Try adding a new agent to your preproduction_team ParallelAgent. For example, you could create a marketing_agent that writes a tagline for the movie based on the PLOT_OUTLINE.
+- Add more tools: Give your researcher agent more tools. You could create a tool that uses a Google Search API to find information that isn't on Wikipedia.
+- Explore CustomAgent: The lab mentioned the CustomAgent for workflows that don't fit the standard templates. Try building one that, for example, conditionally runs an agent only if a specific key exists in the session state.
+
 ## Project Structure
 ```
 .
@@ -146,3 +154,5 @@ cat $(~/Users/UserName/Downloads/Apps/GoogleAI/adk_multiagent_systems/.venv/bin/
 
 4) Point Python/requests to the combined bundle:
 - Add to your project `.env`:
+
+
