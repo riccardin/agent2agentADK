@@ -11,10 +11,13 @@ It includes initial definitions for:
 - Helper tools: 'append_to_state' and 'write_file'.
 """
 import os
+import sys
 import logging
 import google.cloud.logging
 
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))  # repo root
 from callback_logging import log_query_to_model, log_model_response
+from model_config import get_model
 from dotenv import load_dotenv
 
 from google.adk import Agent
@@ -28,13 +31,17 @@ from langchain_community.tools import WikipediaQueryRun
 from langchain_community.utilities import WikipediaAPIWrapper
 
 
-cloud_logging_client = google.cloud.logging.Client()
-cloud_logging_client.setup_logging()
-
 load_dotenv()
 
-model_name = os.getenv("MODEL")
-print(model_name)
+try:
+    cloud_logging_client = google.cloud.logging.Client()
+    cloud_logging_client.setup_logging()
+except Exception as e:
+    print(f"Cloud Logging unavailable ({e}). Falling back to standard logging.")
+    logging.basicConfig(level=logging.INFO)
+
+model_name = get_model()
+print(f"Using model: {os.getenv('MODEL')}")
 
 # Tools
 

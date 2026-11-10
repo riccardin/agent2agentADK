@@ -12,8 +12,9 @@ import sys
 import logging
 import json
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))  # repo root
 from callback_logging import log_query_to_model, log_model_response
+from model_config import get_model
 from dotenv import load_dotenv, find_dotenv
 import google.cloud.logging
 from google.auth.exceptions import DefaultCredentialsError
@@ -59,6 +60,8 @@ def ensure_valid_google_credentials():
         os.environ.pop("GOOGLE_APPLICATION_CREDENTIALS", None)
 
 ensure_valid_google_credentials()
+
+model = get_model()
 
 def load_service_account_credentials():
     """Return service account credentials if GOOGLE_APPLICATION_CREDENTIALS points to a SA key."""
@@ -140,7 +143,7 @@ attractions: List[str]
 
 attractions_planner = Agent(
     name="attractions_planner",
-    model=os.getenv("MODEL"),
+    model=model,
     description="Build a list of attractions to visit in a country.",
     instruction="""
         - Provide the user options for attractions to visit within their selected country.
@@ -156,7 +159,7 @@ attractions_planner = Agent(
 
 travel_brainstormer = Agent(
     name="travel_brainstormer",
-    model=os.getenv("MODEL"),
+    model=model,
     description="Help a user decide what country to visit.",
     instruction="""
         Provide a few suggestions of popular countries for travelers.
@@ -173,7 +176,7 @@ travel_brainstormer = Agent(
 
 root_agent = Agent(
     name="steering",
-    model=os.getenv("MODEL"),
+    model=model,
     description="Start a user on a travel adventure.",
     instruction="""
         Ask the user if they know where they'd like to travel
