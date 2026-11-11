@@ -1,8 +1,8 @@
 # ADK Multiagent Systems
 
 A lightweight multi-agent Python project with two example agents:
-- `parent_and_subagents/agent.py` — parent agent that can spawn subagents; supports optional Cloud Logging.
-- `workflow_agents/agent.py` — workflow-focused agent example.
+- `agents/parent_and_subagents/agent.py` — parent agent that can spawn subagents; supports optional Cloud Logging.
+- `agents/workflow_agents/agent.py` — workflow-focused agent example.
 
 This repo is set up for local development with a virtual environment, optional Google Cloud authentication, and VS Code debugging.
 
@@ -23,8 +23,8 @@ Practical skills highlighted in the codelab you can bring into this repo:
 - Reading values via key templating (e.g., `{my_key?}`).
 
 How this repo maps to those ideas:
-- `parent_and_subagents/agent.py` is where you can define your `root_agent` and register specialized sub-agents.
-- `workflow_agents/agent.py` is a convenient place to experiment with Sequential/Loop/Parallel patterns for task orchestration.
+- `agents/parent_and_subagents/agent.py` is where you can define your `root_agent` and register specialized sub-agents.
+- `agents/workflow_agents/agent.py` is a convenient place to experiment with Sequential/Loop/Parallel patterns for task orchestration.
 
 For background and detailed walkthroughs, see the official codelab: https://codelabs.developers.google.com/codelabs/production-ready-ai-with-gc/3-developing-agents/build-a-multi-agent-system-with-adk#0
 
@@ -42,14 +42,21 @@ There are many ways to build on what you've learned. Here are some ideas:
 ├── .gitignore
 ├── .vscode/launch.json        # VS Code debug configs
 ├── requirements.txt           # Python dependencies
-├── callback_logging.py        # Logging helper with guarded imports
-├── parent_and_subagents/
-│   ├── __init__.py
-│   └── agent.py
-└── workflow_agents/
-    ├── __init__.py
-    └── agent.py
+├── run_local.sh               # One-step setup + start (adk web agents)
+├── .env.example               # Template for .env
+├── callback_logging.py        # Shared model logging callbacks
+├── model_config.py            # MODEL -> Gemini string or Claude (LiteLlm)
+├── movie_pitches/             # Output written by workflow_agents
+└── agents/                    # ADK agents dir: every subfolder here is an agent
+    ├── parent_and_subagents/
+    │   ├── __init__.py
+    │   └── agent.py
+    └── workflow_agents/
+        ├── __init__.py
+        └── agent.py
 ```
+
+Only agent packages belong in `agents/`. `adk web` lists every subfolder of the directory it serves as an agent, so keep output folders, scripts and docs at the repo root.
 
 ## Prerequisites
 - Python 3.11+ recommended
@@ -66,7 +73,21 @@ pip install -r requirements.txt
 ```
 
 ## Environment Configuration
-Create a `.env` in the project root. Common variables:
+Copy the template and fill in the placeholders (`.env` is gitignored; `.env.example` is committed):
+```bash
+cp .env.example .env
+```
+`run_local.sh` refuses to start while any `your-...` placeholder is left in `.env`.
+
+### Choosing a model
+`.env.example` defaults to Claude through the Anthropic API (via LiteLLM):
+```env
+MODEL=anthropic/claude-sonnet-5-5
+ANTHROPIC_API_KEY=<your-anthropic-api-key>
+```
+Any `MODEL` starting with `anthropic/` goes to Anthropic; any other value (e.g. `gemini-2.5-flash`) uses Gemini on Vertex AI or with a Google AI Studio key. See `.env.example` for all three options. The routing lives in `model_config.py`.
+
+Common variables:
 ```env
 # LLM model (set to a valid model name for your environment)
 MODEL="<your-model-name>"
@@ -95,15 +116,22 @@ GOOGLE_APPLICATION_CREDENTIALS="<path-to-credentials.json>"
 If the credentials file is invalid or missing, the agent falls back to standard Python logging.
 
 ## Run
+- Quick start (creates the venv, installs dependencies, starts the ADK web UI on http://localhost:8000):
+  ```bash
+  ./run_local.sh                       # web UI; use PORT=8080 ./run_local.sh to change port
+  ./run_local.sh run workflow_agents   # interactive CLI for one agent
+  ```
+
 - Using Python directly:
   ```bash
   source .venv/bin/activate
-  python parent_and_subagents/agent.py
+  python agents/parent_and_subagents/agent.py
   ```
 
 - If you have an `adk` CLI available:
   ```bash
-  adk run parent_and_subagents
+  adk run agents/parent_and_subagents
+  adk web agents                   # dev UI, run from the repo root
   ```
 
 ## Debugging (VS Code)
